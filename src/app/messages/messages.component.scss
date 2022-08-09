@@ -1,0 +1,15 @@
+h2 {
+  color: darkred;
+}
+
+.clear {
+  color: #2f2e2e;
+  background-color: #eee;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  &:hover {
+    color: white;
+    background-color: #42545C;
+  }
+}

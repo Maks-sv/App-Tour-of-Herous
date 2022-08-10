@@ -4,11 +4,11 @@ import { ControlsComponent } from './controls/controls.component';
 import { HeroDetailsComponent } from './hero-details/hero-details.component';
 import { HeroesComponent } from './heroes/heroes.component';
 
-const routes: Routes = [
-  { path: 'heroes', component: HeroesComponent },
+const routes : Routes = [
+  { path: '', redirectTo: '/controls', pathMatch: 'full' },
   { path: 'controls', component: ControlsComponent },
-  { path: '',redirectTo:'/controls',pathMatch:'full'},
-  { path: 'detail/:id',component:HeroDetailsComponent}
+  { path: 'details/:id', component: HeroDetailsComponent },
+  { path: 'heroes', component: HeroesComponent }
 ];
 
 @NgModule({

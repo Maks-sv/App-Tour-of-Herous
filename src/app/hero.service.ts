@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Hero } from './hero';
 import { MessageService } from './message.service';
-import { HEROES } from './mock-heroes';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +31,14 @@ export class HeroService {
       console.log(this.log);
       
     }
-
   getHeroes(): Observable<Hero[]> {
-    const heroes = of(HEROES);
-    this.messageService.add('HeroService: fetched heroes');
-    return heroes;
+    return this.http.get<Hero[]>(this.heroesUrl)
+      .pipe(
+        tap(_ => this.log('fetched heroes')),
+        catchError(this.handleError<Hero[]>('getHeroes', []))
+      );
   }
-// +HERO SERVER
+  
   getHero(id: number): Observable<Hero> {
     const url = `${this.heroesUrl}/${id}`;
     return this.http.get<Hero>(url).pipe(
@@ -46,21 +46,21 @@ export class HeroService {
       catchError(this.handleError<Hero>(`getHero id=${id}`))
     );
   }
-
-  // UPDATE
- updateHero(hero: Hero): Observable<any>{
-   return this.http.put(this.heroesUrl ,hero,this.httpOptions)
-   .pipe( tap(_ => this.log(`updated hero id=${hero.id}`)),
-   catchError(this.handleError<any>('updateHero')))
-  }
-// +HEROES
+  
   addHero(hero: Hero): Observable<Hero> {
     return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
       tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
       catchError(this.handleError<Hero>('addHero'))
     );
   } 
-  // DELETE
+
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
+      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
+  }
+
   deleteHero(id: number): Observable<Hero> {
     const url = `${this.heroesUrl}/${id}`;
   
@@ -69,7 +69,7 @@ export class HeroService {
       catchError(this.handleError<Hero>('deleteHero'))
     );
   }
-  // SEARCH
+
   searchHeroes(term: string): Observable<Hero[]> {
     if (!term.trim()) {
       return of([]);
